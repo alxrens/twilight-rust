@@ -4,12 +4,18 @@ use poise::Command;
 use crate::Data;
 
 
+pub mod about;
+pub mod anilist;
+pub mod help;
+pub mod pets;
+pub mod roast;
 
-mod world;
-
-pub fn create_command_framework() -> Vec<Command<Data, Error>> {
+pub async fn create_command_framework() -> Vec<Command<Data, Error>> {
     vec![
-        world::hello(),
-        world::embeed()
-        ]
+        help::help(),
+        about::about(),
+        anilist::anilist(),
+        pets::pets(),
+        roast::roast()
+    ]
 }
