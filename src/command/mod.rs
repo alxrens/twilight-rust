@@ -9,6 +9,9 @@ pub mod anilist;
 pub mod help;
 pub mod pets;
 pub mod roast;
+pub mod anime;
+pub mod uwuify;
+pub mod archillect;
 
 pub async fn create_command_framework() -> Vec<Command<Data, Error>> {
     vec![
@@ -16,6 +19,9 @@ pub async fn create_command_framework() -> Vec<Command<Data, Error>> {
         about::about(),
         anilist::anilist(),
         pets::pets(),
-        roast::roast()
+        roast::roast(),
+        anime::aniquote(),
+        uwuify::uwuify(),
+        archillect::archillect()
     ]
 }

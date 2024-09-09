@@ -2281,6 +2281,7 @@ dependencies = [
  "log",
  "poise",
  "poise_macros",
+ "rand",
  "reqwest 0.12.7",
  "serde",
  "serde_json",
