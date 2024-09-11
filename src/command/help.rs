@@ -15,13 +15,13 @@ pub async fn help(ctx: Context<'_>) -> Result<(), anyhow::Error> {
         .last()
         .unwrap()
         .replace(".rs", "");
-        if command_name == "mod" || command_name == "help" {continue;}
+        if command_name == "mod" || command_name == "help" || command_name == "prefix" {continue;}
 
         commands.push(format!("+ {command_name}"));
     }
     let commands = commands.join("\n");
     let reply =  format!("
-    ```diff\n+ Arch Twilight\n+ Here are the list of the available commands: \n\r\r{commands}\n\r\r- start typing slash command now.```
+    ```diff\n+ Arch Twilight\n+ Here are the list of the available commands: \n\r\r- slash commands : \n{commands}\n\r\r- start typing slash command now.```
     ");
 
     ctx.say(reply).await?;

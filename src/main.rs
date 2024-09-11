@@ -43,7 +43,7 @@ async fn main() {
     let token = std::env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
     // let g = GuildId::new(std::env::var("GUILD_ID").expect("Expected a guild id in the environment").parse().unwrap());
     // let r = RoleId::new(std::env::var("ROLE_ID").expect("Expected a role id in the environment").parse().unwrap());
-    let intents = GatewayIntents::non_privileged();
+    let intents = GatewayIntents::all();
     let netconn = Arc::new(utils::connection::init_client_connection());
 
     Builder::from_env(Env::new().default_filter_or("debug"))
@@ -62,6 +62,7 @@ async fn main() {
             event_handler: |ctx, event, framework, _data| {
                 Box::pin(event_handler( ctx, event, framework))
             },
+            prefix_options : poise::PrefixFrameworkOptions { prefix: Some("$".to_string()), ..Default::default()},
             ..Default::default()
         })
         .setup(

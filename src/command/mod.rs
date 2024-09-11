@@ -12,6 +12,9 @@ pub mod roast;
 pub mod anime;
 pub mod uwuify;
 pub mod archillect;
+pub mod waifu;
+pub mod randomword;
+pub mod prefix;
 
 pub async fn create_command_framework() -> Vec<Command<Data, Error>> {
     vec![
@@ -22,6 +25,8 @@ pub async fn create_command_framework() -> Vec<Command<Data, Error>> {
         roast::roast(),
         anime::aniquote(),
         uwuify::uwuify(),
-        archillect::archillect()
+        archillect::archillect(),
+        waifu::waifu(),
+        randomword::randomwords()
     ]
 }

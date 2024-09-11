@@ -49,12 +49,14 @@ pub async fn anilist(
     ).components(action_row);
     
 
-    ctx.send(reply).await?;
+    let first_msg = ctx.send(reply).await?;
     let mut message = None;
 
     while let Some(inter) = ComponentInteractionCollector::new(ctx).timeout(std::time::Duration::from_secs(60)).await
     {
+        
         let mut msg = inter.message.clone();
+        message = Some(msg.clone());
         if let Ok(index) = inter.data.custom_id.parse::<i32>(){
             if index>= 0 && index < anilist.len() as i32  {
                 let animedata = &anilist[index as usize - 1];
@@ -91,11 +93,17 @@ pub async fn anilist(
         }
 
     }
-    
-    let builder = serenity::EditMessage::new().content("button expired.").components(
+
+    if let Some( mut msg) = message {
+        let builder = serenity::EditMessage::new()
+            .components(
         vec![]
-    );
-    message.unwrap().edit(ctx, builder).await?;
+        );
+        msg.edit(ctx, builder).await?;
+    } else {
+    let builder = poise::CreateReply::default().content("why did i even bother serving you if you're not gonna do anything with this command?").components(vec![]);
+        first_msg.edit(ctx, builder).await?;
+    }
 
     Ok(())
 }

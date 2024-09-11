@@ -12,7 +12,7 @@ static URL : &str = "https://archillect.com/";
 pub async fn archillect(
     ctx : Context<'_>,
 ) -> Result<(), anyhow::Error> {
-    let limitnum = 400010;
+    let limitnum = 410187;
     let mut rng = StdRng::from_entropy();
     let math_min = rng.gen_range(1..=limitnum);
     let math_plus = rng.gen_range(1..=limitnum);
