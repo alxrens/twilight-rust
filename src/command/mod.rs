@@ -27,6 +27,7 @@ pub async fn create_command_framework() -> Vec<Command<Data, Error>> {
         uwuify::uwuify(),
         archillect::archillect(),
         waifu::waifu(),
-        randomword::randomwords()
+        randomword::randomwords(),
+        prefix::anicard::anicard()
     ]
 }

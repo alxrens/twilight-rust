@@ -3,18 +3,20 @@ use std::sync::Arc;
 use command::create_command_framework;
 use poise::serenity_prelude::{self, ActivityData, GatewayIntents};
 use anyhow::Error;
-use utils::connection::NetConn;
+use utils::connection::{DbConnection, NetConn};
 use env_logger::{Env, Builder};
 
 pub struct Data{
-    netconn : Arc<NetConn>
+    netconn : Arc<NetConn>,
+    db_conn : Arc<DbConnection>
 }
 type Context<'a> = poise::Context<'a, Data, Error>;
 
 mod command;
 mod api;
 mod utils;
-
+mod schema;
+pub mod modules;
 
 async fn event_handler(
     ctx : &serenity_prelude::Context,
@@ -24,7 +26,6 @@ async fn event_handler(
 Result<(), Error> {
     match event {
         serenity_prelude::FullEvent::Ready { data_about_bot, .. }=> {
-            // println!("{} is connected!", data_about_bot.user.name);
             log::info!("{} is connected!", data_about_bot.user.name);
             ctx.set_presence(Some(ActivityData::listening("Your Voice")), serenity_prelude::OnlineStatus::DoNotDisturb);
         }
@@ -45,6 +46,7 @@ async fn main() {
     // let r = RoleId::new(std::env::var("ROLE_ID").expect("Expected a role id in the environment").parse().unwrap());
     let intents = GatewayIntents::all();
     let netconn = Arc::new(utils::connection::init_client_connection());
+    let dbconn = Arc::new(utils::connection::DbConnection::new());
 
     Builder::from_env(Env::new().default_filter_or("debug"))
         .filter_module("h2", log::LevelFilter::Off)
@@ -69,7 +71,7 @@ async fn main() {
             |ctx, _ready, framework| {
                 Box::pin(async move {
                     poise::builtins::register_globally(ctx, &framework.options().commands).await?;
-                    Ok(Data{netconn: netconn.clone()})
+                    Ok(Data{netconn: netconn.clone(), db_conn: dbconn.clone()})
                 })
             })
         .build();
