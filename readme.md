@@ -39,9 +39,9 @@ I use a lot of third party API and website that I found interesting.
  - [jikan.moe](https://jikan.moe/)
  - [catAPI](thecatapi.com)
  - [randomfox](https://randomfox.ca)
- - [dogAPI]("https://dog.ceo")
- - [Evil Insult]("https://evilinsult.com")
- - [Murat Pak Twitter]("https://x.com/muratpak?lang=en") this one is being get by mathdroid
+ - [dogAPI](https://dog.ceo)
+ - [Evil Insult](https://evilinsult.com)
+ - [Murat Pak Twitter](https://x.com/muratpak?lang=en) this one is being get by mathdroid
 ## Deprecaterd Related Project
 
 [Twilight](https://github.com/alxrens/Twilight)
