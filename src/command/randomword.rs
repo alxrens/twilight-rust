@@ -7,10 +7,3 @@ pub async fn randomwords(ctx: Context<'_>) -> Result<(), anyhow::Error> {
     ctx.say(word).await?;
     Ok(())
 }
-
-
-
-
-
-
-
