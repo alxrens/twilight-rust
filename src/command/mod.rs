@@ -15,6 +15,7 @@ pub mod archillect;
 pub mod waifu;
 pub mod randomword;
 pub mod prefix;
+pub mod chat;
 
 pub async fn create_command_framework() -> Vec<Command<Data, Error>> {
     vec![
@@ -27,6 +28,7 @@ pub async fn create_command_framework() -> Vec<Command<Data, Error>> {
         uwuify::uwuify(),
         archillect::archillect(),
         waifu::waifu(),
-        randomword::randomwords()
+        randomword::randomwords(),
+        chat::magi()
     ]
 }

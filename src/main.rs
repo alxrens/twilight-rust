@@ -28,6 +28,44 @@ Result<(), Error> {
             log::info!("{} is connected!", data_about_bot.user.name);
             ctx.set_presence(Some(ActivityData::listening("Your Voice")), serenity_prelude::OnlineStatus::DoNotDisturb);
         }
+        // serenity_prelude::FullEvent::Message { new_message, .. } => {
+        //     if new_message.content.contains("@here") || new_message.content.contains("@everyone") {
+        //         return Ok(());
+        //     }
+            
+        //     if new_message.author.bot || !new_message.mentions.contains(&new_message.author){
+        //         return Ok(());
+        //     }
+        //     let re = Regex::new(r"\<@!?(\d+)>").unwrap();
+        //     let user_message = re.replace_all(&new_message.content, "");
+        //     let user_message = user_message.as_str();
+        //     let user_message = user_message.trim();
+        //     let user_message = user_message.replace("<@!", "");
+        //     let user_message = user_message.replace(">", "");
+        //     let user_message = user_message.replace("@", "");
+        //     let user_message = user_message.replace("!", "");
+        //     let user_message = user_message.replace(" ", "");
+        //     let user_message = user_message.replace("\n", "");
+        //     let user_message = user_message.replace("\r", "");
+        //     let user_message = user_message.replace("\t", "");
+
+        //     if user_message.is_empty() {
+        //         return Ok(());
+        //     }
+
+        //     let response = api::chat(&user_message, &ctx.data().netconn).await;
+        //     match response {
+        //         Ok(response) => {
+        //             let builder = poise::CreateReply::default().content(response);
+        //             new_message.reply(ctx, builder).await?;
+        //         },
+        //         Err(e) => {
+        //             let builder = poise::CreateReply::default().content("something went wrong");
+        //             new_message.reply(ctx, builder).await?;
+        //         }
+        //     }
+
+        // }
         _=> {}
     }
     Ok(())
