@@ -32,7 +32,7 @@ pub async fn chat(question : &str, client : &Arc<NetConn>) -> Result<String, any
     let url = std::env::var("OLLAMA_URL").expect("OLLAMA_URL not set");
     let chat_url = format!("{}/api/chat", url);
     let se = web_search(question, client).await?;
-    let web_result =format!("and here is the search engine result for your reference,try to check the link below. state the url in the respond too: {}", se);
+    let web_result =format!("and here is the search engine result for your reference,try to check the link below. if my question is just simple interaction such as \"who are you?\" or \"what is your name?\" YOU DONT HAVE TO state the url in the respond but you can just say something about yourself. but if what i said is genuine question about knowledge YOU HAVE TO put the source url: {}", se);
     let mut generated_prompt = create_prompt(String::from("dolphin-mistral")).await;
 
     let new_question = format!("{} {}",question, web_result);
