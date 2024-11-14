@@ -29,6 +29,6 @@ pub async fn create_command_framework() -> Vec<Command<Data, Error>> {
         archillect::archillect(),
         waifu::waifu(),
         randomword::randomwords(),
-        chat::magi()
+        chat::devilmagi()
     ]
 }

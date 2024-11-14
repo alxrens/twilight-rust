@@ -3,18 +3,20 @@ use std::sync::Arc;
 use command::create_command_framework;
 use poise::serenity_prelude::{self, ActivityData, GatewayIntents};
 use anyhow::Error;
-use utils::connection::NetConn;
+use utils::connection::{DbPool, NetConn};
 use env_logger::{Env, Builder};
 
 pub struct Data{
-    netconn : Arc<NetConn>
+    netconn : Arc<NetConn>,
+    db_pool : DbPool
 }
 type Context<'a> = poise::Context<'a, Data, Error>;
 
 mod command;
 mod api;
 mod utils;
-
+pub mod schema;
+pub mod magi_memories;
 
 async fn event_handler(
     ctx : &serenity_prelude::Context,
@@ -37,7 +39,7 @@ Result<(), Error> {
         //         return Ok(());
         //     }
         //     let re = Regex::new(r"\<@!?(\d+)>").unwrap();
-        //     let user_message = re.replace_all(&new_message.content, "");
+        //     let user_message = re.replace_all(&new_message.content, "").into_owned();
         //     let user_message = user_message.as_str();
         //     let user_message = user_message.trim();
         //     let user_message = user_message.replace("<@!", "");
@@ -53,15 +55,15 @@ Result<(), Error> {
         //         return Ok(());
         //     }
 
-        //     let response = api::chat(&user_message, &ctx.data().netconn).await;
+        //     let response = api::chat::chat(&user_message, &set_context.data().netconn).await;
         //     match response {
         //         Ok(response) => {
-        //             let builder = poise::CreateReply::default().content(response);
-        //             new_message.reply(ctx, builder).await?;
+        //             // let builder = poise::CreateReply::default().content(response);
+        //             new_message.reply(set_context, response).await?;
         //         },
         //         Err(e) => {
-        //             let builder = poise::CreateReply::default().content("something went wrong");
-        //             new_message.reply(ctx, builder).await?;
+        //             // let builder = poise::CreateReply::default().content("something went wrong");
+        //             new_message.reply(set_context, "something went wrong").await?;
         //         }
         //     }
 
@@ -84,6 +86,8 @@ async fn main() {
     let intents = GatewayIntents::all();
     let netconn = Arc::new(utils::connection::init_client_connection());
 
+    let db_pool = utils::connection::init_db_pool();
+    
     Builder::from_env(Env::new().default_filter_or("debug"))
         .filter_module("h2", log::LevelFilter::Off)
         .filter_module("hyper", log::LevelFilter::Off)
@@ -107,7 +111,11 @@ async fn main() {
             |ctx, _ready, framework| {
                 Box::pin(async move {
                     poise::builtins::register_globally(ctx, &framework.options().commands).await?;
-                    Ok(Data{netconn: netconn.clone()})
+                    Ok(Data{
+                        netconn: netconn.clone(),
+                        db_pool : db_pool.clone()
+                    
+                    })
                 })
             })
         .build();

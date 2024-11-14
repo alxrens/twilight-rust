@@ -6,7 +6,7 @@ use crate::{api::chat::chat, Context};
 
 
 #[poise::command(prefix_command)]
-pub async fn magi(
+pub async fn devilmagi(
     ctx : Context<'_>,
     #[rest]
     #[description = "input your message"]
@@ -17,7 +17,7 @@ pub async fn magi(
         ctx.say("message is too short").await?;
         return Ok(())
     } else {
-        let response = chat(&message, &ctx.data().netconn).await?;
+        let response = chat(&message, &ctx.data().netconn, ctx.author().id.to_string().as_str(), &ctx.data().db_pool).await?;
         // log::info!("response: {}", response);
         if response.len() > 2000 {
             let response_part1 = &response[..2000];
