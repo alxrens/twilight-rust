@@ -38,7 +38,7 @@ pub async fn chat(question : &str, client : &Arc<NetConn>, user_id: &str, dbpool
     let messages: Vec<Message>;
     let magimem = magi_memories::controller::get_by_user_id(user_id, dbpool).await?;
     if magimem.len() ==0 {
-        messages = create_prompt(String::from("CognitiveComputations/dolphin-llama3.1")).await.messages;
+        messages = create_prompt(String::from("srizon/pixie")).await.messages;
         let magimem_tostr = serde_json::to_string(&messages).unwrap();
         let magmem = MagiMemories{
             id : "".to_string(),
@@ -54,11 +54,12 @@ pub async fn chat(question : &str, client : &Arc<NetConn>, user_id: &str, dbpool
 
     let new_question = format!("{} {}",question, "".to_string());
 
-    let generated_prompt = update_message_history(&new_question, "user", messages, "CognitiveComputations/dolphin-llama3.1:latest".to_string()).await;
-    let data = client.conn.post(chat_url).body(serde_json::to_string(&generated_prompt).unwrap()).send().await;
+    let generated_prompt = update_message_history(&new_question, "user", messages, "srizon/pixie".to_string()).await;
+    let data = client.conn.post(&chat_url).body(serde_json::to_string(&generated_prompt).unwrap()).send().await;
     match data {
         Ok(data) => {
             let json : ChatApiResponse   = data.json().await?;
+            
             // let respond = format!("{}\n {}",json.message.content, se);
 
             let update_ai_mess = update_message_history(&json.message.content, &json.message.role, generated_prompt.messages, json.model).await;
@@ -67,11 +68,41 @@ pub async fn chat(question : &str, client : &Arc<NetConn>, user_id: &str, dbpool
             Ok(json.message.content)
         },
         Err(e) => {
-            log::error!("{:?}", e);
-            Err(anyhow::anyhow!(e))
+            log::error!("{:?}", e.to_string());
+            Err(anyhow::anyhow!(e.to_string()))
     }
 }}
 
+
+pub async fn describe_image(img_base_64 : &str,question : &str, client : &Arc<NetConn>) -> Result<String, anyhow::Error> {
+    let request = serde_json::json!(
+        {
+            "model" : "srizon/pixie",
+            "messages" : [
+                {
+                    "role" : "user",
+                    "content" : format!("{}", question)
+                }
+            ],
+            "image" : img_base_64,
+            "stream" : false
+        }
+    );
+
+    let url = std::env::var("OLLAMA_URL").expect("OLLAMA_URL not set");
+    let chat_url = format!("{}/api/chat", url);
+    let data = client.conn.post(&chat_url).body(serde_json::to_string(&request).unwrap()).send().await;
+    match data {
+        Ok(data) => {
+            let json : ChatApiResponse   = data.json().await?;
+            Ok(json.message.content)
+        },
+        Err(e) => {
+            log::error!("{:?}", e.to_string());
+            Err(anyhow::anyhow!(e.to_string()))
+        }
+    }
+}
 
 
 
